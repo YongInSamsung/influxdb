@@ -159,6 +159,10 @@ func (cmd *Command) walkTSMFiles() error {
 func (cmd *Command) walkWALFiles() error {
 	return filepath.Walk(cmd.walDir, func(path string, f os.FileInfo, err error) error {
 		if err != nil {
+			if os.IsNotExist(err) {
+				fmt.Fprintf(cmd.Stderr, "skipped missing wal dir: %s\n", path)
+				return nil
+			}
 			return err
 		}
 
